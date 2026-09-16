@@ -172,8 +172,18 @@ def main() -> None:
     while True:
         keyboard.wait(config["hotkey"])
         time.sleep(0.15)
-        audio = record_until_release(config["hotkey"])
-        text = transcribe(audio, speech_model)
+        try:
+            audio = record_until_release(config["hotkey"])
+        except Exception as exc:
+            print(f"Microphone error: {type(exc).__name__}: {exc}")
+            print("Returning to listening mode. Check the microphone and try again.")
+            continue
+        try:
+            text = transcribe(audio, speech_model)
+        except Exception as exc:
+            print(f"Speech recognition error: {type(exc).__name__}: {exc}")
+            print("Returning to listening mode. Try a shorter phrase.")
+            continue
         if not text:
             print("I didn't catch that. Try again.")
             continue
