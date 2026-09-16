@@ -36,7 +36,7 @@ needs_label = canvas.create_text(120, 262, text="energia 80 · fome 80 · descan
 
 drag = {"x": 0, "y": 0}
 activity = {"last": time.time(), "keys": 0, "last_reward": 0.0}
-movement = {"walking": False, "phase": 0, "direction": 1}
+movement = {"walking": False, "phase": 0, "direction": 1, "mode": "exploring"}
 
 def begin(event):
     drag["x"], drag["y"] = event.x_root, event.y_root
@@ -105,12 +105,15 @@ def wander():
     target_y = random.randint(60, max(60, screen_h - 340))
     start_x, start_y = window.winfo_x(), window.winfo_y()
     movement["direction"] = 1 if target_x >= start_x else -1
+    movement["mode"] = "walking"
     steps = 75
     movement["walking"] = True
     def glide(step=0):
         if step > steps:
             movement["walking"] = False
-            window.after(random.randint(1800, 4000), wander)
+            movement["mode"] = "cuddling"
+            canvas.itemconfigure(bubble, text=random.choice(("Vou ficar aqui um pouquinho.", "Que cantinho gostoso!", "Hora de aconchegar.")))
+            window.after(random.randint(5000, 11000), wander)
             return
         progress = step / steps
         eased = progress * progress * (3 - 2 * progress)
@@ -123,7 +126,9 @@ def wander():
 def idle_bob(step=0):
     bob = math.sin(step * (0.55 if movement["walking"] else 0.18)) * (3 if movement["walking"] else 1.5)
     canvas.coords(sprite, 120, 112 + bob)
-    if movement["walking"] and len(images) >= 3:
+    if movement["mode"] == "cuddling" and len(images) >= 4:
+        canvas.itemconfigure(sprite, image=images[3])
+    elif movement["walking"] and len(images) >= 3:
         canvas.itemconfigure(sprite, image=images[1 if movement["direction"] >= 0 else 2])
     elif len(images):
         canvas.itemconfigure(sprite, image=images[0])
