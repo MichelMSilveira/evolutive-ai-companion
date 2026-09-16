@@ -1,0 +1,4 @@
+models/
+conversation.json
+__pycache__/
+*.pyc
