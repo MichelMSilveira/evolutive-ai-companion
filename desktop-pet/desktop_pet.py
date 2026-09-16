@@ -24,9 +24,11 @@ window.wm_attributes("-transparentcolor", "#07111f")
 
 canvas = tk.Canvas(window, width=240, height=280, bg="#07111f", highlightthickness=0)
 canvas.pack()
-image = tk.PhotoImage(file=str(IMAGE))
-image = image.subsample(max(1, image.width() // 190))
-sprite = canvas.create_image(120, 112, image=image)
+frame_paths = [ROOT / f"frame-{index}.png" for index in range(4)]
+images = [tk.PhotoImage(file=str(path)).subsample(3) for path in frame_paths if path.exists()]
+if not images:
+    images = [tk.PhotoImage(file=str(IMAGE)).subsample(max(1, tk.PhotoImage(file=str(IMAGE)).width() // 190))]
+sprite = canvas.create_image(120, 112, image=images[0])
 label = canvas.create_text(120, 245, text="Nova · pronta para conversar", fill="#b7ffd0", font=("Segoe UI", 10, "bold"))
 bubble = canvas.create_text(120, 25, text="Oi!", fill="#ffffff", font=("Segoe UI", 11, "bold"))
 needs_label = canvas.create_text(120, 262, text="energia 80 · fome 80 · descanso 80", fill="#8da1ba", font=("Segoe UI", 8))
@@ -117,6 +119,10 @@ def wander():
     glide()
 
 def idle_bob(step=0):
+    if movement["walking"] and len(images) >= 3:
+        canvas.itemconfigure(sprite, image=images[1 + (movement["phase"] % 2)])
+    elif len(images):
+        canvas.itemconfigure(sprite, image=images[0])
     if movement["walking"]:
         movement["phase"] += 1
         offset = 3 if movement["phase"] % 2 == 0 else -1
