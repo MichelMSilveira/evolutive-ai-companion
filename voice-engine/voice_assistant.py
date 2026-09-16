@@ -188,12 +188,17 @@ def main() -> None:
             print("I didn't catch that. Try again.")
             continue
         print(f"You: {text}")
-        event = update_pet_from_text(text)
+        try:
+            event = update_pet_from_text(text)
+        except Exception as exc:
+            print(f"Pet state warning: {type(exc).__name__}: {exc}")
+            event = "conversation"
         print(f"Nova registered: {event}")
         try:
             answer = ask_ollama(config, history, text, event, knowledge)
-        except requests.RequestException as exc:
-            print(f"Ollama is unavailable: {exc}")
+        except Exception as exc:
+            print(f"Assistant response error: {type(exc).__name__}: {exc}")
+            print("Returning to listening mode.")
             continue
         print(f"Assistant: {answer}\n")
         try:
