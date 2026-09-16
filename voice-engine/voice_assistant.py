@@ -142,7 +142,7 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
     if knowledge:
         messages.append({"role": "system", "content": "Use these starter English-Portuguese examples when useful: " + json.dumps(knowledge, ensure_ascii=False)})
     messages.extend(history[-8:])
-    messages.append({"role": "system", "content": "FINAL FORMAT RULE: Reply in exactly two lines. First line must start with PT: and be Brazilian Portuguese. Second line must start with EN: and be simple English. Do not answer with English only."})
+    messages.append({"role": "system", "content": "FINAL FORMAT RULE: Reply in exactly three lines: YOU-EN: corrected English version of the user's sentence; EN: your answer in natural English; PT: Brazilian Portuguese translation of your answer. Do not omit any line."})
     messages.append({"role": "user", "content": user_text})
     response = requests.post(OLLAMA_URL, json={"model": config["model"], "messages": messages, "stream": False}, timeout=120)
     response.raise_for_status()
@@ -151,7 +151,7 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
 
 def speak(text: str, voices: dict[str, str]) -> None:
     """Use natural neural voices; Ollama and memory remain local."""
-    chunks = re.findall(r"(PT|EN):\s*(.*?)(?=\s+(?:PT|EN):|$)", text, flags=re.IGNORECASE | re.DOTALL)
+    chunks = re.findall(r"(YOU-EN|PT|EN):\s*(.*?)(?=\s+(?:YOU-EN|PT|EN):|$)", text, flags=re.IGNORECASE | re.DOTALL)
     lines = [(tag, content.strip()) for tag, content in chunks] or [("EN", line.strip()) for line in text.splitlines()]
     for tag, line in lines:
         if not line:
