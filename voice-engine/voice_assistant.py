@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import json
 import html
+import asyncio
+import tempfile
 import os
 import queue
 import sys
@@ -19,7 +21,8 @@ import numpy as np
 import requests
 import sounddevice as sd
 from faster_whisper import WhisperModel
-import win32com.client
+import edge_tts
+import pygame
 
 
 ROOT = Path(__file__).parent
@@ -146,21 +149,22 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
 
 
 def speak(text: str, voices: dict[str, str]) -> None:
-    """Use Windows SAPI directly for stable repeated replies."""
-    speaker = win32com.client.Dispatch("SAPI.SpVoice")
-    installed = speaker.GetVoices()
+    """Use natural neural voices; Ollama and memory remain local."""
     for line in text.splitlines():
         line = line.strip()
         if not line:
             continue
-        wanted = "Maria" if line.lower().startswith("pt:") else "Zira"
-        for index in range(installed.Count):
-            voice = installed.Item(index)
-            if wanted.lower() in voice.GetDescription().lower():
-                speaker.Voice = voice
-                break
-        clean_line = html.escape(line.removeprefix("PT:").removeprefix("EN:").strip())
-        speaker.Speak(f"<rate absspeed=\"-2\"><silence msec=\"120\"/>{clean_line}<silence msec=\"160\"/></rate>", 8)
+        voice = "pt-BR-ThalitaNeural" if line.lower().startswith("pt:") else "en-US-AvaNeural"
+        clean_line = line.removeprefix("PT:").removeprefix("EN:").strip()
+        output = Path(tempfile.gettempdir()) / f"nova_{time.time_ns()}.mp3"
+        asyncio.run(edge_tts.Communicate(clean_line, voice, rate="-8%", pitch="+2Hz").save(str(output)))
+        pygame.mixer.init()
+        pygame.mixer.music.load(str(output))
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            time.sleep(0.05)
+        pygame.mixer.quit()
+        output.unlink(missing_ok=True)
 
 
 def main() -> None:
