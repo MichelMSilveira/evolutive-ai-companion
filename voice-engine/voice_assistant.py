@@ -210,8 +210,9 @@ def main() -> None:
         print(f"Assistant: {answer}\n")
         try:
             speak(answer, voices)
-        except RuntimeError as exc:
+        except Exception as exc:
             print(f"Audio output unavailable: {exc}")
+            print("Continuing without audio. Returning to listening mode.")
         reward_pet()
         history.extend([{"role": "user", "content": text}, {"role": "assistant", "content": answer}])
         save_history(history)
