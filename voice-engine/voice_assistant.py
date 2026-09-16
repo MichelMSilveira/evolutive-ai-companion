@@ -136,6 +136,7 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
     if knowledge:
         messages.append({"role": "system", "content": "Use these starter English-Portuguese examples when useful: " + json.dumps(knowledge, ensure_ascii=False)})
     messages.extend(history[-8:])
+    messages.append({"role": "system", "content": "FINAL FORMAT RULE: Reply in exactly two lines. First line must start with PT: and be Brazilian Portuguese. Second line must start with EN: and be simple English. Do not answer with English only."})
     messages.append({"role": "user", "content": user_text})
     response = requests.post(OLLAMA_URL, json={"model": config["model"], "messages": messages, "stream": False}, timeout=120)
     response.raise_for_status()
