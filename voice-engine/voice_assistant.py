@@ -25,7 +25,7 @@ ROOT = Path(__file__).parent
 CONFIG_PATH = ROOT / "config.json"
 KNOWLEDGE_PATH = ROOT / "knowledge.json"
 HISTORY_PATH = ROOT / "conversation.json"
-PET_STATE_PATH = ROOT.parent / "desktop-pet" / "nova-state.json"
+PET_STATE_PATH = ROOT.parent / "evolutive-ai-companion" / "desktop-pet" / "nova-state.json"
 
 def update_pet_from_text(text: str) -> str:
     """Apply a voluntary daily check-in without inspecting anything beyond the spoken text."""
@@ -57,6 +57,7 @@ def update_pet_from_text(text: str) -> str:
         needs[key] = max(0, min(100, needs.get(key, 80) + delta))
     state.setdefault("events", []).append({"type": event, "text": text, "timestamp": time.time()})
     state["events"] = state["events"][-50:]
+    PET_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     PET_STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
     return event
 OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
@@ -100,6 +101,7 @@ def reward_pet() -> None:
     state["xp"] += 10
     state["level"] = 1 + state["xp"] // 100
     state["mood"] = "excited"
+    PET_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     PET_STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
