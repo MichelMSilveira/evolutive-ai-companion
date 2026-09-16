@@ -29,6 +29,7 @@ image = image.subsample(max(1, image.width() // 190))
 sprite = canvas.create_image(120, 112, image=image)
 label = canvas.create_text(120, 245, text="Nova · pronta para conversar", fill="#b7ffd0", font=("Segoe UI", 10, "bold"))
 bubble = canvas.create_text(120, 25, text="Oi!", fill="#ffffff", font=("Segoe UI", 11, "bold"))
+needs_label = canvas.create_text(120, 262, text="energia 80 · fome 80 · descanso 80", fill="#8da1ba", font=("Segoe UI", 8))
 
 drag = {"x": 0, "y": 0}
 activity = {"last": time.time(), "keys": 0, "last_reward": 0.0}
@@ -78,6 +79,8 @@ def refresh_state():
             phrases = {"focused": "Estou aprendendo!", "energetic": "Vamos nos mexer!", "resting": "Vou descansar...", "playful": "Oba, vamos brincar!", "content": "Estou bem cuidada!", "happy": "Oi, Michel!"}
             canvas.itemconfigure(label, text=f"Nova · nível {state.get('level', 1)} · {state.get('xp', 0)} XP · {mood}")
             canvas.itemconfigure(bubble, text=phrases.get(mood, "Estou com você!"))
+            needs = state.get("needs", {})
+            canvas.itemconfigure(needs_label, text=f"energia {needs.get('energy', 80)} · fome {needs.get('hunger', 80)} · descanso {needs.get('rest', 80)}")
         except (OSError, json.JSONDecodeError):
             pass
     window.after(1000, refresh_state)
