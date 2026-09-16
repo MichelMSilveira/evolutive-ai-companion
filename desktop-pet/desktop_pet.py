@@ -129,10 +129,15 @@ def settle():
     window.after(random.randint(5000, 11000), wander)
 
 def idle_bob(step=0):
-    bob = math.sin(step * (0.55 if movement["walking"] else 0.18)) * (3 if movement["walking"] else 1.5)
+    mood = state.get("mood", "happy")
+    rate = 0.8 if mood == "energetic" else 0.55 if movement["walking"] else 0.18
+    amplitude = 5 if mood == "energetic" else 3 if movement["walking"] else 1.5
+    bob = math.sin(step * rate) * amplitude
     canvas.coords(sprite, 120, 112 + bob)
-    if movement["mode"] == "cuddling" and len(images) >= 4:
+    if (mood == "resting" or movement["mode"] in ("cuddling", "sniffing")) and len(images) >= 4:
         canvas.itemconfigure(sprite, image=images[3])
+    elif mood == "playful" and movement["walking"] and len(images) >= 3:
+        canvas.itemconfigure(sprite, image=images[1 + (step % 2)])
     elif movement["walking"] and len(images) >= 3:
         canvas.itemconfigure(sprite, image=images[1 if movement["direction"] >= 0 else 2])
     elif len(images):
