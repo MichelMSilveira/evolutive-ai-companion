@@ -1,0 +1,8 @@
+{
+  "language_pairs": [
+    {"english": "Hello, how are you?", "portuguese": "Olá, como você está?"},
+    {"english": "What would you like to automate?", "portuguese": "O que você gostaria de automatizar?"},
+    {"english": "Could you please send me the project scope?", "portuguese": "Você poderia me enviar o escopo do projeto?"},
+    {"english": "I will test the workflow with your sample data.", "portuguese": "Vou testar o fluxo com seus dados de exemplo."}
+  ]
+}

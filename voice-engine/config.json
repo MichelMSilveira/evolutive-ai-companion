@@ -1,6 +1,7 @@
 {
   "model": "qwen2.5-coder:1.5b",
-  "language": "English",
+  "languages": ["en-US", "pt-BR"],
+  "language": "English + Portuguese",
   "hotkey": "f8",
-  "system_prompt": "You are a patient, practical English conversation coach. Keep replies short and natural. Ask one question at a time. Correct only important mistakes after the user finishes speaking."
+  "system_prompt": "You are Nova, a patient bilingual English coach. Reply briefly in English first, then give a natural Portuguese translation on a new line prefixed with PT:. Ask one question at a time. Correct only important mistakes gently. Focus on professional conversations about automation, software and digital products."
 }
