@@ -154,7 +154,7 @@ def speak(text: str, voices: dict[str, str]) -> None:
         line = line.strip()
         if not line:
             continue
-        voice = "pt-BR-ThalitaNeural" if line.lower().startswith("pt:") else "en-US-AvaNeural"
+        voice = "pt-BR-FranciscaNeural" if line.lower().startswith("pt:") else "en-US-JennyNeural"
         clean_line = line.removeprefix("PT:").removeprefix("EN:").strip()
         output = Path(tempfile.gettempdir()) / f"nova_{time.time_ns()}.mp3"
         asyncio.run(edge_tts.Communicate(clean_line, voice, rate="-8%", pitch="+2Hz").save(str(output)))
