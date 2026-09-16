@@ -106,14 +106,14 @@ def wander():
     start_x, start_y = window.winfo_x(), window.winfo_y()
     movement["direction"] = 1 if target_x >= start_x else -1
     movement["mode"] = "walking"
-    steps = 75
+    steps = random.choice((65, 75, 90))
     movement["walking"] = True
     def glide(step=0):
         if step > steps:
             movement["walking"] = False
-            movement["mode"] = "cuddling"
-            canvas.itemconfigure(bubble, text=random.choice(("Vou ficar aqui um pouquinho.", "Que cantinho gostoso!", "Hora de aconchegar.")))
-            window.after(random.randint(5000, 11000), wander)
+            movement["mode"] = "sniffing"
+            canvas.itemconfigure(bubble, text=random.choice(("Deixa eu investigar...", "Hmm, este lugar parece bom.", "Vou conferir este cantinho.")))
+            window.after(random.randint(1200, 2600), settle)
             return
         progress = step / steps
         eased = progress * progress * (3 - 2 * progress)
@@ -122,6 +122,11 @@ def wander():
         window.geometry(f"+{x}+{y}")
         window.after(16, lambda: glide(step + 1))
     glide()
+
+def settle():
+    movement["mode"] = "cuddling"
+    canvas.itemconfigure(bubble, text=random.choice(("Vou ficar aqui um pouquinho.", "Que cantinho gostoso!", "Hora de aconchegar.")))
+    window.after(random.randint(5000, 11000), wander)
 
 def idle_bob(step=0):
     bob = math.sin(step * (0.55 if movement["walking"] else 0.18)) * (3 if movement["walking"] else 1.5)
