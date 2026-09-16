@@ -24,7 +24,7 @@ window.wm_attributes("-transparentcolor", "#07111f")
 
 canvas = tk.Canvas(window, width=240, height=280, bg="#07111f", highlightthickness=0)
 canvas.pack()
-frame_paths = [ROOT / f"frame-{index}.png" for index in range(4)]
+frame_paths = [ROOT / "frame-0.png", ROOT / "frame-2.png", ROOT / "frame-1.png", ROOT / "frame-3.png"]
 images = [tk.PhotoImage(file=str(path)).subsample(3) for path in frame_paths if path.exists()]
 if not images:
     images = [tk.PhotoImage(file=str(IMAGE)).subsample(max(1, tk.PhotoImage(file=str(IMAGE)).width() // 190))]
