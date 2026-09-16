@@ -80,6 +80,15 @@ def refresh_state():
             canvas.itemconfigure(label, text=f"Nova · nível {state.get('level', 1)} · {state.get('xp', 0)} XP · {mood}")
             canvas.itemconfigure(bubble, text=phrases.get(mood, "Estou com você!"))
             needs = state.get("needs", {})
+            now = time.time()
+            last_tick = state.get("last_tick", now)
+            if now - last_tick >= 60:
+                minutes = int((now - last_tick) // 60)
+                needs["hunger"] = max(0, needs.get("hunger", 80) - minutes)
+                needs["rest"] = max(0, needs.get("rest", 80) - minutes // 2)
+                needs["attention"] = max(0, needs.get("attention", 80) - minutes // 3)
+                state["last_tick"] = now
+                STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
             canvas.itemconfigure(needs_label, text=f"energia {needs.get('energy', 80)} · fome {needs.get('hunger', 80)} · descanso {needs.get('rest', 80)}")
         except (OSError, json.JSONDecodeError):
             pass
