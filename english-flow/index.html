@@ -6,7 +6,7 @@
     <meta name="description" content="EnglishFlow is a voice-first workspace for practicing professional English conversations." />
     <title>EnglishFlow — Practice professional English</title>
     <link rel="stylesheet" href="styles.css" />
-    <style>.assistant-mascot{position:relative;z-index:1;width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 10px 25px #0008);animation:mascot-float 3.5s ease-in-out infinite}@keyframes mascot-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}</style>
+    <style>.assistant-mascot{position:relative;z-index:1;width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 10px 25px #0008);animation:mascot-float 3.5s ease-in-out infinite}@keyframes mascot-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}.pet-level{position:absolute;bottom:-18px;color:var(--mint);font-size:10px;font-weight:700;letter-spacing:1px}.pet-stats{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}.stat{display:flex;align-items:center;gap:10px;margin-top:11px;color:var(--muted);font-size:11px}.stat>span{width:78px}.stat i{height:6px;flex:1;background:#1d2d43;border-radius:9px;overflow:hidden}.stat b{display:block;width:30%;height:100%;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:inherit;transition:width .5s}</style>
   </head>
   <body>
     <main class="app-shell">
@@ -21,7 +21,7 @@
           <h1>Speak clearly.<br /><span>Work confidently.</span></h1>
           <p class="hero-copy">Practice client conversations for automation, software, and digital products — one natural exchange at a time.</p>
         </div>
-        <div class="hero-orbit" aria-label="EnglishFlow assistant"><div class="orbit-ring"></div><img class="assistant-mascot" src="assistant-mascot.png" alt="Friendly EnglishFlow AI assistant" /></div>
+        <div class="hero-orbit" aria-label="EnglishFlow assistant"><div class="orbit-ring"></div><img class="assistant-mascot" src="assistant-mascot.png" alt="Friendly EnglishFlow AI assistant" /><span class="pet-level">NOVA · LV 1</span></div>
       </section>
 
       <section class="workspace-grid">
@@ -37,12 +37,12 @@
         <aside class="coach-card card">
           <div class="card-heading"><div><p class="eyebrow">COACHING</p><h2>Helpful phrases</h2></div><span class="coach-icon">✦</span></div>
           <div class="phrase-list"><button class="phrase" data-phrase="Could you please send me the complete project scope?"><b>Scope</b><span>Could you please send me the complete project scope?</span></button><button class="phrase" data-phrase="What tools are you currently using?"><b>Tools</b><span>What tools are you currently using?</span></button><button class="phrase" data-phrase="I will test the workflow with your sample data."><b>Delivery</b><span>I will test the workflow with your sample data.</span></button></div>
-          <div class="progress"><div class="progress-label"><span>Session progress</span><strong id="progressText">2 / 5</strong></div><div class="progress-track"><span id="progressBar"></span></div></div>
+          <div class="progress"><div class="progress-label"><span>Session progress</span><strong id="progressText">2 / 5</strong></div><div class="progress-track"><span id="progressBar"></span></div></div><div class="pet-stats"><div class="progress-label"><span>Nova's development</span><strong id="xpText">0 XP</strong></div><div class="stat"><span>Intelligence</span><i><b id="intelligenceStat"></b></i></div><div class="stat"><span>Curiosity</span><i><b id="curiosityStat"></b></i></div><div class="stat"><span>Sociability</span><i><b id="sociabilityStat"></b></i></div></div>
         </aside>
       </section>
 
       <footer class="footer"><span>Built as a portfolio demo for professional English practice.</span><span>EnglishFlow v0.1</span></footer>
     </main>
-    <script src="app.js"></script>
+    <script src="app.js"></script><script>const nova=JSON.parse(localStorage.getItem('nova-stats')||'{"xp":0,"intelligence":1,"curiosity":1,"sociability":1}');function drawNova(){for(const k of ['intelligence','curiosity','sociability']){const e=document.getElementById(k+'Stat');if(e)e.style.width=Math.min(100,10+nova[k]*18)+'%'}document.getElementById('xpText').textContent=nova.xp+' XP'}const t=document.getElementById('transcript');let n=t.children.length;new MutationObserver(()=>{if(t.children.length>n){nova.xp+=10;n=t.children.length;localStorage.setItem('nova-stats',JSON.stringify(nova));drawNova()}}).observe(t,{childList:true});drawNova();</script>
   </body>
 </html>
