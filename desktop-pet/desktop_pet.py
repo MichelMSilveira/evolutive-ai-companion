@@ -1,6 +1,8 @@
 import json
 import random
 import tkinter as tk
+import time
+import keyboard
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -28,6 +30,7 @@ sprite = canvas.create_image(120, 112, image=image)
 label = canvas.create_text(120, 245, text="Nova · pronta para conversar", fill="#b7ffd0", font=("Segoe UI", 10, "bold"))
 
 drag = {"x": 0, "y": 0}
+activity = {"last": time.time(), "keys": 0, "last_reward": 0.0}
 
 def begin(event):
     drag["x"], drag["y"] = event.x_root, event.y_root
@@ -46,6 +49,24 @@ def interact(_event=None):
 
 def close(_event=None):
     window.destroy()
+
+def record_activity(_event=None):
+    now = time.time()
+    activity["last"] = now
+    activity["keys"] += 1
+    if activity["keys"] >= 20 and now - activity["last_reward"] > 30:
+        activity["keys"] = 0
+        activity["last_reward"] = now
+        state["xp"] = state.get("xp", 0) + 2
+        state["level"] = 1 + state["xp"] // 10
+        state["mood"] = "focused"
+        STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def update_mood():
+    if time.time() - activity["last"] > 60:
+        state["mood"] = "resting"
+        canvas.itemconfigure(label, text=f"Nova · nível {state.get('level', 1)} · descansando")
+    window.after(5000, update_mood)
 
 def refresh_state():
     global state
@@ -89,8 +110,10 @@ for item in (sprite, label):
     canvas.tag_bind(item, "<Double-Button-1>", interact)
 canvas.bind("<Escape>", close)
 window.bind("<Escape>", close)
+keyboard.on_press(record_activity)
 window.geometry("240x280+1100+500")
 refresh_state()
 wander()
 idle_bob()
+update_mood()
 window.mainloop()
