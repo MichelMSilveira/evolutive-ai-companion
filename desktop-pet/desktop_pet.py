@@ -54,7 +54,9 @@ def refresh_state():
             pass
     window.after(1000, refresh_state)
 
-for item in (canvas, sprite, label):
+canvas.bind("<ButtonPress-1>", begin)
+canvas.bind("<B1-Motion>", move)
+for item in (sprite, label):
     canvas.tag_bind(item, "<ButtonPress-1>", begin)
     canvas.tag_bind(item, "<B1-Motion>", move)
     canvas.tag_bind(item, "<Double-Button-1>", interact)
