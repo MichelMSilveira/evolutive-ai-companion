@@ -143,14 +143,21 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
     return response.json()["message"]["content"].strip()
 
 
-def speak(text: str, engine: pyttsx3.Engine, voices: dict[str, str]) -> None:
-    for line in text.splitlines():
-        if not line.strip():
-            continue
-        is_pt = line.strip().lower().startswith("pt:")
-        engine.setProperty("voice", voices["pt"] if is_pt else voices["en"])
-        engine.say(line.removeprefix("PT:").strip())
-    engine.runAndWait()
+def speak(text: str, voices: dict[str, str]) -> None:
+    """Use a fresh Windows speech engine per reply to avoid the queue stopping."""
+    engine = pyttsx3.init()
+    try:
+        engine.stop()
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            is_pt = line.lower().startswith("pt:")
+            engine.setProperty("voice", voices["pt"] if is_pt else voices["en"])
+            engine.say(line.removeprefix("PT:").removeprefix("EN:").strip())
+        engine.runAndWait()
+    finally:
+        engine.stop()
 
 
 def main() -> None:
@@ -185,7 +192,10 @@ def main() -> None:
             print(f"Ollama is unavailable: {exc}")
             continue
         print(f"Assistant: {answer}\n")
-        speak(answer, speaker, voices)
+        try:
+            speak(answer, voices)
+        except RuntimeError as exc:
+            print(f"Audio output unavailable: {exc}")
         reward_pet()
         history.extend([{"role": "user", "content": text}, {"role": "assistant", "content": answer}])
         save_history(history)
