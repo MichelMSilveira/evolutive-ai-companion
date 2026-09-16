@@ -1,0 +1,20 @@
+{
+  "id": "starter-cat",
+  "name": "Nova",
+  "species": "evolutive-ai-companion",
+  "form": "base-cat",
+  "level": 1,
+  "attributes": {
+    "intelligence": 1,
+    "creativity": 1,
+    "energy": 1,
+    "sociability": 1,
+    "curiosity": 1
+  },
+  "memoryPolicy": "user-owned-local-first",
+  "evolution": {
+    "visualChanges": true,
+    "personalityChanges": true,
+    "tradeableItems": false
+  }
+}

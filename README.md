@@ -11,6 +11,10 @@ O usuário começa com um personagem-base. Conversas, estudos, cuidados e escolh
 - `voice-engine/`: assistente local com Ollama, Vosk e voz do Windows.
 - `english-flow/`: protótipo visual com mascote e fluxo de prática profissional em inglês.
 
+## Primeiro personagem
+
+O protótipo começa com Nova, um gato virtual de forma simples e neutra. Ele começa com atributos equilibrados e evolui a partir das interações do usuário. O estado inicial está documentado em `character-base.json`.
+
 ## Próxima evolução
 
 Unificar voz, personagem, atributos, salvamento local e evolução visual em uma pequena experiência desktop.
