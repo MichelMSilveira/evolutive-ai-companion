@@ -160,7 +160,7 @@ def speak(text: str, voices: dict[str, str]) -> None:
                 speaker.Voice = voice
                 break
         clean_line = html.escape(line.removeprefix("PT:").removeprefix("EN:").strip())
-        speaker.Speak(f"<pitch absmiddle=\"4\"><rate absspeed=\"-1\">{clean_line}</rate></pitch>", 8)
+        speaker.Speak(f"<rate absspeed=\"-2\"><silence msec=\"120\"/>{clean_line}<silence msec=\"160\"/></rate>", 8)
 
 
 def main() -> None:
