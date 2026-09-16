@@ -23,6 +23,7 @@ from vosk import KaldiRecognizer, Model
 ROOT = Path(__file__).parent
 CONFIG_PATH = ROOT / "config.json"
 HISTORY_PATH = ROOT / "conversation.json"
+PET_STATE_PATH = ROOT.parent / "desktop-pet" / "nova-state.json"
 MODEL_PATH = ROOT / "models" / "vosk-model-small-en-us-0.15"
 OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
 
@@ -51,6 +52,18 @@ def load_history() -> list[dict]:
 
 def save_history(history: list[dict]) -> None:
     HISTORY_PATH.write_text(json.dumps(history[-20:], ensure_ascii=False, indent=2), encoding="utf-8")
+
+def reward_pet() -> None:
+    state = {"name": "Nova", "level": 1, "xp": 0, "mood": "happy"}
+    if PET_STATE_PATH.exists():
+        try:
+            state.update(json.loads(PET_STATE_PATH.read_text(encoding="utf-8")))
+        except json.JSONDecodeError:
+            pass
+    state["xp"] += 10
+    state["level"] = 1 + state["xp"] // 100
+    state["mood"] = "excited"
+    PET_STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def record_until_release(hotkey: str) -> bytes:
@@ -122,6 +135,7 @@ def main() -> None:
             continue
         print(f"Assistant: {answer}\n")
         speak(answer, speaker)
+        reward_pet()
         history.extend([{"role": "user", "content": text}, {"role": "assistant", "content": answer}])
         save_history(history)
 

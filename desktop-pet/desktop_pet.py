@@ -44,6 +44,16 @@ def interact(_event=None):
 def close(_event=None):
     window.destroy()
 
+def refresh_state():
+    global state
+    if STATE.exists():
+        try:
+            state = json.loads(STATE.read_text(encoding="utf-8"))
+            canvas.itemconfigure(label, text=f"Nova · nível {state.get('level', 1)} · {state.get('xp', 0)} XP · {state.get('mood', 'happy')}")
+        except (OSError, json.JSONDecodeError):
+            pass
+    window.after(1000, refresh_state)
+
 for item in (canvas, sprite, label):
     canvas.tag_bind(item, "<ButtonPress-1>", begin)
     canvas.tag_bind(item, "<B1-Motion>", move)
@@ -51,4 +61,5 @@ for item in (canvas, sprite, label):
 canvas.bind("<Escape>", close)
 window.bind("<Escape>", close)
 window.geometry("240x280+1100+500")
+refresh_state()
 window.mainloop()
