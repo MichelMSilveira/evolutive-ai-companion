@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 
 import keyboard
+import numpy as np
 import pyttsx3
 import requests
 import sounddevice as sd
@@ -122,7 +123,8 @@ def record_until_release(hotkey: str) -> bytes:
 
 
 def transcribe(audio: bytes, model: WhisperModel) -> str:
-    segments, _info = model.transcribe(audio, task="transcribe", vad_filter=True, beam_size=3)
+    samples = np.frombuffer(audio, dtype=np.int16).astype(np.float32) / 32768.0
+    segments, _info = model.transcribe(samples, task="transcribe", vad_filter=True, beam_size=3)
     return " ".join(segment.text.strip() for segment in segments).strip()
 
 
