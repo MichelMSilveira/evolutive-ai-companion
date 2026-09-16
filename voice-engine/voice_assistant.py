@@ -39,7 +39,7 @@ def update_pet_from_text(text: str) -> str:
         event = "meal"
     elif any(word in lowered for word in ("game", "play", "joguei", "brinquei", "lazer")):
         event = "play"
-    state = {"name": "Nova", "level": 1, "xp": 0, "mood": "happy", "events": []}
+    state = {"name": "Nova", "level": 1, "xp": 0, "mood": "happy", "events": [], "needs": {"energy": 80, "rest": 80, "hunger": 80, "attention": 80}}
     if PET_STATE_PATH.exists():
         try:
             state.update(json.loads(PET_STATE_PATH.read_text(encoding="utf-8")))
@@ -49,6 +49,10 @@ def update_pet_from_text(text: str) -> str:
     state["xp"] += rewards[event]
     state["level"] = 1 + state["xp"] // 100
     state["mood"] = {"exercise": "energetic", "study": "focused", "rest": "resting", "meal": "content", "play": "playful"}.get(event, "happy")
+    needs = state.setdefault("needs", {"energy": 80, "rest": 80, "hunger": 80, "attention": 80})
+    changes = {"exercise": {"energy": -8, "rest": -5}, "study": {"energy": -3, "attention": 2}, "rest": {"energy": 12, "rest": 15}, "meal": {"hunger": 15, "energy": 3}, "play": {"energy": -2, "attention": 5}, "conversation": {"attention": 4}}
+    for key, delta in changes.get(event, {}).items():
+        needs[key] = max(0, min(100, needs.get(key, 80) + delta))
     state.setdefault("events", []).append({"type": event, "text": text, "timestamp": time.time()})
     state["events"] = state["events"][-50:]
     PET_STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
