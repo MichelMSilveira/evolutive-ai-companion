@@ -24,6 +24,35 @@ ROOT = Path(__file__).parent
 CONFIG_PATH = ROOT / "config.json"
 HISTORY_PATH = ROOT / "conversation.json"
 PET_STATE_PATH = ROOT.parent / "desktop-pet" / "nova-state.json"
+
+def update_pet_from_text(text: str) -> str:
+    """Apply a voluntary daily check-in without inspecting anything beyond the spoken text."""
+    lowered = text.lower()
+    event = "conversation"
+    if any(word in lowered for word in ("exercise", "bike", "walk", "workout", "exercício", "caminhada", "academia")):
+        event = "exercise"
+    elif any(word in lowered for word in ("sleep", "rest", "dormi", "descans", "sono")):
+        event = "rest"
+    elif any(word in lowered for word in ("study", "learn", "estudei", "estudar", "aprendi")):
+        event = "study"
+    elif any(word in lowered for word in ("eat", "food", "comi", "comida", "refeição")):
+        event = "meal"
+    elif any(word in lowered for word in ("game", "play", "joguei", "brinquei", "lazer")):
+        event = "play"
+    state = {"name": "Nova", "level": 1, "xp": 0, "mood": "happy", "events": []}
+    if PET_STATE_PATH.exists():
+        try:
+            state.update(json.loads(PET_STATE_PATH.read_text(encoding="utf-8")))
+        except json.JSONDecodeError:
+            pass
+    rewards = {"conversation": 3, "study": 15, "exercise": 12, "rest": 8, "meal": 4, "play": 8}
+    state["xp"] += rewards[event]
+    state["level"] = 1 + state["xp"] // 100
+    state["mood"] = {"exercise": "energetic", "study": "focused", "rest": "resting", "meal": "content", "play": "playful"}.get(event, "happy")
+    state.setdefault("events", []).append({"type": event, "text": text, "timestamp": time.time()})
+    state["events"] = state["events"][-50:]
+    PET_STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+    return event
 MODEL_PATH = ROOT / "models" / "vosk-model-small-en-us-0.15"
 OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
 
@@ -128,6 +157,8 @@ def main() -> None:
             print("I didn't catch that. Try again.")
             continue
         print(f"You: {text}")
+        event = update_pet_from_text(text)
+        print(f"Nova registered: {event}")
         try:
             answer = ask_ollama(config, history, text)
         except requests.RequestException as exc:
