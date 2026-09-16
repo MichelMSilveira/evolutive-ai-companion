@@ -1,4 +1,5 @@
 import json
+import random
 import tkinter as tk
 from pathlib import Path
 
@@ -54,6 +55,25 @@ def refresh_state():
             pass
     window.after(1000, refresh_state)
 
+def wander():
+    screen_w = window.winfo_screenwidth()
+    screen_h = window.winfo_screenheight()
+    target_x = random.randint(40, max(40, screen_w - 280))
+    target_y = random.randint(60, max(60, screen_h - 340))
+    start_x, start_y = window.winfo_x(), window.winfo_y()
+    steps = 45
+    def glide(step=0):
+        if step > steps:
+            window.after(random.randint(1800, 4000), wander)
+            return
+        progress = step / steps
+        eased = progress * progress * (3 - 2 * progress)
+        x = round(start_x + (target_x - start_x) * eased)
+        y = round(start_y + (target_y - start_y) * eased)
+        window.geometry(f"+{x}+{y}")
+        window.after(35, lambda: glide(step + 1))
+    glide()
+
 canvas.bind("<ButtonPress-1>", begin)
 canvas.bind("<B1-Motion>", move)
 for item in (sprite, label):
@@ -64,4 +84,5 @@ canvas.bind("<Escape>", close)
 window.bind("<Escape>", close)
 window.geometry("240x280+1100+500")
 refresh_state()
+wander()
 window.mainloop()
