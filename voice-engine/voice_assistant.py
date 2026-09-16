@@ -10,6 +10,7 @@ import json
 import html
 import asyncio
 import tempfile
+import re
 import os
 import queue
 import sys
@@ -150,12 +151,13 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
 
 def speak(text: str, voices: dict[str, str]) -> None:
     """Use natural neural voices; Ollama and memory remain local."""
-    for line in text.splitlines():
-        line = line.strip()
+    chunks = re.findall(r"(PT|EN):\s*(.*?)(?=\s+(?:PT|EN):|$)", text, flags=re.IGNORECASE | re.DOTALL)
+    lines = [(tag, content.strip()) for tag, content in chunks] or [("EN", line.strip()) for line in text.splitlines()]
+    for tag, line in lines:
         if not line:
             continue
-        voice = "pt-BR-FranciscaNeural" if line.lower().startswith("pt:") else "en-US-JennyNeural"
-        clean_line = line.removeprefix("PT:").removeprefix("EN:").strip()
+        voice = "pt-BR-FranciscaNeural" if tag.upper() == "PT" else "en-US-JennyNeural"
+        clean_line = line
         output = Path(tempfile.gettempdir()) / f"nova_{time.time_ns()}.mp3"
         asyncio.run(edge_tts.Communicate(clean_line, voice, rate="-4%", pitch="+0Hz").save(str(output)))
         pygame.mixer.init()
