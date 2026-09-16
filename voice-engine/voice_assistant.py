@@ -121,8 +121,10 @@ def transcribe(audio: bytes, model: Model) -> str:
     return result.get("text", "").strip()
 
 
-def ask_ollama(config: dict, history: list[dict], user_text: str) -> str:
+def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "conversation") -> str:
     messages = [{"role": "system", "content": config["system_prompt"]}]
+    guidance = {"study": "Respond as a supportive study companion and celebrate learning.", "exercise": "Respond warmly and encourage sustainable movement without medical advice.", "rest": "Respond warmly and support healthy rest and balance.", "meal": "Respond without judging food or body; gently encourage balance.", "play": "Respond playfully and support a healthy balance between work and leisure.", "conversation": "Respond naturally and keep the conversation going."}
+    messages.append({"role": "system", "content": guidance.get(event, guidance["conversation"])})
     messages.extend(history[-8:])
     messages.append({"role": "user", "content": user_text})
     response = requests.post(OLLAMA_URL, json={"model": config["model"], "messages": messages, "stream": False}, timeout=120)
@@ -160,7 +162,7 @@ def main() -> None:
         event = update_pet_from_text(text)
         print(f"Nova registered: {event}")
         try:
-            answer = ask_ollama(config, history, text)
+            answer = ask_ollama(config, history, text, event)
         except requests.RequestException as exc:
             print(f"Ollama is unavailable: {exc}")
             continue
