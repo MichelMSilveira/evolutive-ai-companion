@@ -157,7 +157,7 @@ def speak(text: str, voices: dict[str, str]) -> None:
         voice = "pt-BR-FranciscaNeural" if line.lower().startswith("pt:") else "en-US-JennyNeural"
         clean_line = line.removeprefix("PT:").removeprefix("EN:").strip()
         output = Path(tempfile.gettempdir()) / f"nova_{time.time_ns()}.mp3"
-        asyncio.run(edge_tts.Communicate(clean_line, voice, rate="-4%", pitch="0Hz").save(str(output)))
+        asyncio.run(edge_tts.Communicate(clean_line, voice, rate="-4%", pitch="+0Hz").save(str(output)))
         pygame.mixer.init()
         pygame.mixer.music.load(str(output))
         pygame.mixer.music.play()
