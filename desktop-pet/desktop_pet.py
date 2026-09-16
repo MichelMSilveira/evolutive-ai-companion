@@ -1,5 +1,6 @@
 import json
 import random
+import math
 import tkinter as tk
 import time
 import keyboard
@@ -104,7 +105,7 @@ def wander():
     target_y = random.randint(60, max(60, screen_h - 340))
     start_x, start_y = window.winfo_x(), window.winfo_y()
     movement["direction"] = 1 if target_x >= start_x else -1
-    steps = 45
+    steps = 75
     movement["walking"] = True
     def glide(step=0):
         if step > steps:
@@ -116,10 +117,12 @@ def wander():
         x = round(start_x + (target_x - start_x) * eased)
         y = round(start_y + (target_y - start_y) * eased)
         window.geometry(f"+{x}+{y}")
-        window.after(35, lambda: glide(step + 1))
+        window.after(16, lambda: glide(step + 1))
     glide()
 
 def idle_bob(step=0):
+    bob = math.sin(step * (0.55 if movement["walking"] else 0.18)) * (3 if movement["walking"] else 1.5)
+    canvas.coords(sprite, 120, 112 + bob)
     if movement["walking"] and len(images) >= 3:
         canvas.itemconfigure(sprite, image=images[1 if movement["direction"] >= 0 else 2])
     elif len(images):
@@ -129,8 +132,7 @@ def idle_bob(step=0):
         offset = 3 if movement["phase"] % 2 == 0 else -1
     else:
         offset = 1 if step % 2 == 0 else -1
-    canvas.move(sprite, 0, offset)
-    window.after(140 if movement["walking"] else 700, lambda: idle_bob(step + 1))
+    window.after(70 if movement["walking"] else 120, lambda: idle_bob(step + 1))
 
 canvas.bind("<ButtonPress-1>", begin)
 canvas.bind("<B1-Motion>", move)
