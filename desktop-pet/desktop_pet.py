@@ -33,6 +33,7 @@ needs_label = canvas.create_text(120, 262, text="energia 80 · fome 80 · descan
 
 drag = {"x": 0, "y": 0}
 activity = {"last": time.time(), "keys": 0, "last_reward": 0.0}
+movement = {"walking": False, "phase": 0}
 
 def begin(event):
     drag["x"], drag["y"] = event.x_root, event.y_root
@@ -101,8 +102,10 @@ def wander():
     target_y = random.randint(60, max(60, screen_h - 340))
     start_x, start_y = window.winfo_x(), window.winfo_y()
     steps = 45
+    movement["walking"] = True
     def glide(step=0):
         if step > steps:
+            movement["walking"] = False
             window.after(random.randint(1800, 4000), wander)
             return
         progress = step / steps
@@ -114,9 +117,13 @@ def wander():
     glide()
 
 def idle_bob(step=0):
-    offset = 2 if step % 2 == 0 else -2
+    if movement["walking"]:
+        movement["phase"] += 1
+        offset = 3 if movement["phase"] % 2 == 0 else -1
+    else:
+        offset = 1 if step % 2 == 0 else -1
     canvas.move(sprite, 0, offset)
-    window.after(700, lambda: idle_bob(step + 1))
+    window.after(140 if movement["walking"] else 700, lambda: idle_bob(step + 1))
 
 canvas.bind("<ButtonPress-1>", begin)
 canvas.bind("<B1-Motion>", move)
