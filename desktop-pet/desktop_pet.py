@@ -39,8 +39,10 @@ def move(event):
 def interact(_event=None):
     state["xp"] = state.get("xp", 0) + 1
     state["level"] = 1 + state["xp"] // 10
+    state["mood"] = "playful"
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
     canvas.itemconfigure(label, text=f"Nova · nível {state['level']} · {state['xp']} XP")
+    window.after(2500, lambda: canvas.itemconfigure(label, text=f"Nova · nível {state['level']} · {state.get('mood', 'happy')}"))
 
 def close(_event=None):
     window.destroy()
@@ -74,6 +76,11 @@ def wander():
         window.after(35, lambda: glide(step + 1))
     glide()
 
+def idle_bob(step=0):
+    offset = 2 if step % 2 == 0 else -2
+    canvas.move(sprite, 0, offset)
+    window.after(700, lambda: idle_bob(step + 1))
+
 canvas.bind("<ButtonPress-1>", begin)
 canvas.bind("<B1-Motion>", move)
 for item in (sprite, label):
@@ -85,4 +92,5 @@ window.bind("<Escape>", close)
 window.geometry("240x280+1100+500")
 refresh_state()
 wander()
+idle_bob()
 window.mainloop()
