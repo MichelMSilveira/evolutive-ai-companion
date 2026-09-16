@@ -7,6 +7,7 @@ and speech synthesis can all run locally. The conversation is saved locally.
 from __future__ import annotations
 
 import json
+import html
 import os
 import queue
 import sys
@@ -158,7 +159,8 @@ def speak(text: str, voices: dict[str, str]) -> None:
             if wanted.lower() in voice.GetDescription().lower():
                 speaker.Voice = voice
                 break
-        speaker.Speak(line.removeprefix("PT:").removeprefix("EN:").strip())
+        clean_line = html.escape(line.removeprefix("PT:").removeprefix("EN:").strip())
+        speaker.Speak(f"<pitch absmiddle=\"4\"><rate absspeed=\"-1\">{clean_line}</rate></pitch>", 8)
 
 
 def main() -> None:
