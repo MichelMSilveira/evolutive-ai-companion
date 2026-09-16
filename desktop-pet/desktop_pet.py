@@ -20,9 +20,10 @@ window = tk.Tk()
 window.title("Nova")
 window.overrideredirect(True)
 window.attributes("-topmost", True)
-window.configure(bg="#10223a")
+window.configure(bg="#07111f")
+window.wm_attributes("-transparentcolor", "#07111f")
 
-canvas = tk.Canvas(window, width=240, height=280, bg="#10223a", highlightthickness=0)
+canvas = tk.Canvas(window, width=240, height=280, bg="#07111f", highlightthickness=0)
 canvas.pack()
 frame_paths = [ROOT / "frame-0.png", ROOT / "frame-1.png", ROOT / "frame-2.png", ROOT / "frame-3.png"]
 images = [tk.PhotoImage(file=str(path)).subsample(3) for path in frame_paths if path.exists()]
