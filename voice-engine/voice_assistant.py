@@ -17,7 +17,7 @@ import keyboard
 import pyttsx3
 import requests
 import sounddevice as sd
-from vosk import KaldiRecognizer, Model
+from faster_whisper import WhisperModel
 
 
 ROOT = Path(__file__).parent
@@ -58,7 +58,6 @@ def update_pet_from_text(text: str) -> str:
     state["events"] = state["events"][-50:]
     PET_STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
     return event
-MODEL_PATH = ROOT / "models" / "vosk-model-small-en-us-0.15"
 OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
 
 
@@ -122,11 +121,9 @@ def record_until_release(hotkey: str) -> bytes:
     return b"".join(chunks)
 
 
-def transcribe(audio: bytes, model: Model) -> str:
-    recognizer = KaldiRecognizer(model, 16000)
-    recognizer.AcceptWaveform(audio)
-    result = json.loads(recognizer.FinalResult())
-    return result.get("text", "").strip()
+def transcribe(audio: bytes, model: WhisperModel) -> str:
+    segments, _info = model.transcribe(audio, task="transcribe", vad_filter=True, beam_size=3)
+    return " ".join(segment.text.strip() for segment in segments).strip()
 
 
 def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "conversation", knowledge: dict | None = None) -> str:
@@ -164,13 +161,8 @@ def main() -> None:
     config = load_config()
     knowledge = load_knowledge()
     history = load_history()
-    if not MODEL_PATH.exists():
-        print(f"Missing offline speech model: {MODEL_PATH}")
-        print("Download the Vosk English model listed in README.md and extract it there.")
-        raise SystemExit(1)
-
-    print("Loading local speech model...")
-    speech_model = Model(str(MODEL_PATH))
+    print(f"Loading local Whisper model ({config.get('whisper_model', 'base')})...")
+    speech_model = WhisperModel(config.get("whisper_model", "base"), device="cpu", compute_type="int8")
     speaker = pyttsx3.init()
     voices = {"en": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_EN-US_ZIRA_11.0", "pt": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_PT-BR_MARIA_11.0"}
     print(f"Local assistant ready. Hold {config['hotkey'].upper()} to talk; press Ctrl+C to exit.")

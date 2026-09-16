@@ -1,5 +1,6 @@
 {
   "model": "llama3.1:8b",
+  "whisper_model": "base",
   "languages": ["en-US", "pt-BR"],
   "language": "English + Portuguese",
   "hotkey": "f8",
