@@ -2,3 +2,4 @@ models/
 conversation.json
 __pycache__/
 *.pyc
+desktop-pet/nova-state.json
