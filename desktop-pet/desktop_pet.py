@@ -106,7 +106,7 @@ def wander():
     start_x, start_y = window.winfo_x(), window.winfo_y()
     movement["direction"] = 1 if target_x >= start_x else -1
     movement["mode"] = "walking"
-    steps = random.choice((65, 75, 90))
+    steps = random.choice((150, 175, 200))
     movement["walking"] = True
     def glide(step=0):
         if step > steps:
@@ -120,7 +120,7 @@ def wander():
         x = round(start_x + (target_x - start_x) * eased)
         y = round(start_y + (target_y - start_y) * eased)
         window.geometry(f"+{x}+{y}")
-        window.after(16, lambda: glide(step + 1))
+        window.after(24, lambda: glide(step + 1))
     glide()
 
 def settle():
