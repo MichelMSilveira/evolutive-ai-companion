@@ -15,10 +15,10 @@ from pathlib import Path
 
 import keyboard
 import numpy as np
-import pyttsx3
 import requests
 import sounddevice as sd
 from faster_whisper import WhisperModel
+import win32com.client
 
 
 ROOT = Path(__file__).parent
@@ -143,20 +143,20 @@ def ask_ollama(config: dict, history: list[dict], user_text: str, event: str = "
 
 
 def speak(text: str, voices: dict[str, str]) -> None:
-    """Use a fresh Windows speech engine per reply to avoid the queue stopping."""
-    engine = pyttsx3.init()
-    try:
-        engine.stop()
-        for line in text.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            is_pt = line.lower().startswith("pt:")
-            engine.setProperty("voice", voices["pt"] if is_pt else voices["en"])
-            engine.say(line.removeprefix("PT:").removeprefix("EN:").strip())
-        engine.runAndWait()
-    finally:
-        engine.stop()
+    """Use Windows SAPI directly for stable repeated replies."""
+    speaker = win32com.client.Dispatch("SAPI.SpVoice")
+    installed = speaker.GetVoices()
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        wanted = "Maria" if line.lower().startswith("pt:") else "Zira"
+        for index in range(installed.Count):
+            voice = installed.Item(index)
+            if wanted.lower() in voice.GetDescription().lower():
+                speaker.Voice = voice
+                break
+        speaker.Speak(line.removeprefix("PT:").removeprefix("EN:").strip())
 
 
 def main() -> None:
@@ -165,7 +165,6 @@ def main() -> None:
     history = load_history()
     print(f"Loading local Whisper model ({config.get('whisper_model', 'base')})...")
     speech_model = WhisperModel(config.get("whisper_model", "base"), device="cpu", compute_type="int8")
-    speaker = pyttsx3.init()
     voices = {"en": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_EN-US_ZIRA_11.0", "pt": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_PT-BR_MARIA_11.0"}
     print(f"Local assistant ready. Hold {config['hotkey'].upper()} to talk; press Ctrl+C to exit.")
 
