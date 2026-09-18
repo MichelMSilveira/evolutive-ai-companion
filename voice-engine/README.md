@@ -21,7 +21,7 @@ The language changes only the response and speech language; it does not replace 
 
 ## Setup
 
-1. Start Ollama and make sure the model in `config.json` is available.
+1. Start Ollama and make sure the model in `config.json` is available. The project launcher does this automatically when Ollama is installed.
 2. Install Python dependencies:
 
    `python -m pip install -r requirements.txt`
