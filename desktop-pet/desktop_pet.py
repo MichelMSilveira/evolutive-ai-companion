@@ -35,6 +35,7 @@ YARD_KEY = "ctrl+shift+y"
 STATUS_KEY = "ctrl+shift+s"
 TEXT_KEY = "ctrl+shift+t"
 WANDER_KEY = "ctrl+shift+w"
+RESET_KEY = "ctrl+shift+r"
 SESSION_STARTED_AT = time.time()
 caption_mode = {"value": "auto"}
 
@@ -178,6 +179,55 @@ status_canvas.create_text(75, 25, text="NOVA STATUS", fill="#73f5a5", font=("Seg
 status_minimize = tk.Label(status_window, text="−", bg="#173a50", fg="#d7e8ff", cursor="hand2", font=("Segoe UI", 11, "bold"), width=2)
 status_minimize.place(relx=1.0, x=-8, y=7, anchor="ne")
 status_minimize.bind("<Button-1>", lambda _event: toggle_status_panel())
+
+status_controls = tk.Frame(status_window, bg="#10233d")
+status_controls.pack(fill="x", padx=4, pady=(0, 5))
+
+def show_caption_window():
+    caption_window.deiconify()
+    caption_window.lift()
+
+def reset_nova_position():
+    """Stop wandering and return Nova to a predictable desktop corner."""
+    movement["pinned"] = True
+    movement["walking"] = False
+    movement["mode"] = "cuddling"
+    movement["walk_token"] += 1
+    screen_w = window.winfo_screenwidth()
+    screen_h = window.winfo_screenheight()
+    window.geometry(f"+{max(0, screen_w - 430)}+{max(20, screen_h - 535)}")
+    position_status_window()
+    canvas.itemconfigure(bubble, text="Voltei para o meu cantinho.", state="normal")
+    window.after(1800, lambda: canvas.itemconfigure(bubble, state="hidden"))
+
+tk.Button(
+    status_controls,
+    text="REPOSICIONAR NOVA",
+    command=reset_nova_position,
+    bg="#245875",
+    fg="#ffffff",
+    activebackground="#2e7093",
+    activeforeground="#ffffff",
+    relief="flat",
+    bd=0,
+    padx=4,
+    pady=3,
+    font=("Segoe UI", 7, "bold"),
+).pack(fill="x", pady=(0, 3))
+tk.Button(
+    status_controls,
+    text="ABRIR LEGENDA",
+    command=show_caption_window,
+    bg="#173a50",
+    fg="#9fe8ff",
+    activebackground="#245875",
+    activeforeground="#ffffff",
+    relief="flat",
+    bd=0,
+    padx=4,
+    pady=3,
+    font=("Segoe UI", 7, "bold"),
+).pack(fill="x")
 needs_label = status_canvas.create_text(75, 105, text="energia 80\nfome 80\ndescanso 80\natenção 80", fill="#d7e8ff", font=("Segoe UI", 9), justify="left")
 panel_details = status_canvas.create_text(75, 193, text="nível 1 · 0 XP\nhumor: happy", fill="#ffffff", font=("Segoe UI", 9), justify="center")
 yard_label = status_canvas.create_text(75, 260, text="", fill="#73f5a5", font=("Segoe UI", 8, "bold"), justify="center")
@@ -245,7 +295,9 @@ def trigger_yard_key():
 
 def position_status_window():
     if status_window.state() != "withdrawn":
-        status_window.geometry(f"150x315+{window.winfo_x() + 245}+{window.winfo_y() + 18}")
+        status_window.update_idletasks()
+        height = max(315, status_window.winfo_reqheight())
+        status_window.geometry(f"150x{height}+{window.winfo_x() + 245}+{window.winfo_y() + 18}")
 
 def toggle_status_panel():
     if status_window.state() == "withdrawn":
@@ -257,8 +309,7 @@ def toggle_status_panel():
 
 def toggle_caption_window():
     if caption_window.state() == "withdrawn":
-        caption_window.deiconify()
-        caption_window.lift()
+        show_caption_window()
     else:
         caption_window.withdraw()
 
@@ -797,6 +848,7 @@ keyboard.add_hotkey(YARD_KEY, trigger_yard_key)
 keyboard.add_hotkey(STATUS_KEY, lambda: window.after(0, toggle_status_panel))
 keyboard.add_hotkey(TEXT_KEY, lambda: window.after(0, toggle_caption_window))
 keyboard.add_hotkey(WANDER_KEY, lambda: window.after(0, toggle_wander))
+keyboard.add_hotkey(RESET_KEY, lambda: window.after(0, reset_nova_position))
 window.update_idletasks()
 window.update_idletasks()
 screen_w = window.winfo_screenwidth()
