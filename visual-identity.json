@@ -1,0 +1,22 @@
+{
+  "character": "Nova",
+  "version": "1.0.0",
+  "primaryAsset": "mascot-runtime/public/nova-placeholder.png",
+  "vectorFallback": "mascot-runtime/public/assets/nova-source.svg",
+  "style": "fofa gamer, felina, luminosa e acolhedora",
+  "palette": {
+    "fur": "#55d9d5",
+    "furDark": "#253c73",
+    "eyes": "#7dfff0",
+    "accent": "#55f28b",
+    "panel": "#101a2d",
+    "text": "#ffffff"
+  },
+  "states": ["idle", "walking", "talking", "happy", "playful", "thinking", "stretching", "sniffing", "cuddling"],
+  "rules": {
+    "keepSameProportions": true,
+    "keepSameFurPattern": true,
+    "transparentBackground": true,
+    "desktopAndWebMustShareAsset": true
+  }
+}

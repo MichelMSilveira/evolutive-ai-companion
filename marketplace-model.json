@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "assetTypes": {
+    "pet": "Personagem com identidade, visual, personalidade e evolução.",
+    "item": "Roupa, acessório, cenário, animação, voz ou efeito visual.",
+    "module": "Habilidade instalável, como idioma, programação, produtividade ou música.",
+    "service": "Resultado produzido com IA e revisão obrigatória do proprietário."
+  },
+  "privacy": {
+    "privateMemoriesTransferByConsentOnly": true,
+    "personalDataOnBlockchain": false,
+    "marketplaceReceivesRawConversations": false,
+    "ownerCanExportAndDeleteLocalData": true
+  },
+  "provenance": {
+    "recordCreator": true,
+    "recordVersions": true,
+    "recordLicense": true,
+    "recordTransfers": true,
+    "storeContentHashOnly": true
+  },
+  "commercialRules": {
+    "copiedAssetsAllowed": false,
+    "originalOrAuthorizedAssetsOnly": true,
+    "humanReviewRequiredForServices": true,
+    "creatorSetsLicense": true,
+    "platformCommissionConfiguredLater": true,
+    "noAutomaticPublicSharing": true
+  }
+}

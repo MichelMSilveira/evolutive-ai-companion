@@ -8,6 +8,17 @@ Microphone → offline Vosk speech recognition → Ollama local model → text o
 
 The assistant keeps a short local conversation history and uses a configurable system prompt so personality stays stable when the language changes later.
 
+## Language switching
+
+Nova starts in Brazilian Portuguese (`response_language: "pt"`). During the conversation, say one of these commands:
+
+- `falar em português`
+- `falar em inglês`
+- `modo bilíngue`
+- `modo automático`
+
+The language changes only the response and speech language; it does not replace Nova's personality, memories or operating mode.
+
 ## Setup
 
 1. Start Ollama and make sure the model in `config.json` is available.
@@ -23,7 +34,7 @@ The assistant keeps a short local conversation history and uses a configurable s
 
    `python voice_assistant.py`
 
-5. Hold **F8** while speaking, then release it. The transcript appears in the terminal and the local assistant replies with text and audio.
+5. Hold **+** while speaking, then release it. Press **-** to select an area of the screen for vision. The transcript is written to the local Nova log and the assistant replies with text and audio.
 
 ## Portfolio scope
 

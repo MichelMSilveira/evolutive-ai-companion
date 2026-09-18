@@ -16,6 +16,8 @@ def new_state() -> dict:
         "xp": 0,
         "attributes": {key: 1 for key in ATTRIBUTES},
         "needs": {key: 80 for key in NEEDS},
+        "mood": "happy",
+        "events": [],
         "memory": [],
         "history": []
     }
@@ -27,6 +29,9 @@ def load_state(path: Path) -> dict:
     state.update(json.loads(path.read_text(encoding="utf-8")))
     state["attributes"] = {**new_state()["attributes"], **state.get("attributes", {})}
     state["needs"] = {**new_state()["needs"], **state.get("needs", {})}
+    state.setdefault("mood", "happy")
+    state.setdefault("events", [])
+    state["schema"] = max(2, int(state.get("schema", 1)))
     return state
 
 def save_state(path: Path, state: dict) -> None:
@@ -40,6 +45,9 @@ def apply_event(state: dict, event: str, amount: int = 1, note: str = "") -> dic
         "creative-work": {"xp": 12, "creativity": 1, "fun": 2},
         "care": {"xp": 5, "energy": 1, "hunger": 8, "attention": 8},
         "rest": {"rest": 15, "energy": 1},
+        "exercise": {"xp": 12, "energy": 1, "rest": -5},
+        "meal": {"xp": 4, "energy": 1},
+        "play": {"xp": 8, "creativity": 1, "fun": 5},
     }
     for key, value in effects.get(event, {}).items():
         if key == "xp":
@@ -53,4 +61,5 @@ def apply_event(state: dict, event: str, amount: int = 1, note: str = "") -> dic
         state["form"] = "evolved-cat"
     state["history"].append({"event": event, "amount": amount, "note": note})
     state["history"] = state["history"][-50:]
+    state["events"] = state["history"][-50:]
     return state

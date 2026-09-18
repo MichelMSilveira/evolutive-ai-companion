@@ -1,7 +1,7 @@
 # Inicialização automática
 
-O arquivo `start_nova.bat` inicia o pet desktop e o motor de voz local.
+O arquivo `start_nova.bat` inicia o pet desktop e os motores locais de voz e visão. Voz e visão rodam em segundo plano, sem abrir abas de terminal; o pet permanece visível na área de trabalho.
 
 Para iniciar automaticamente com o Windows, o atalho deve ficar na pasta `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`.
 
-Antes de fechar o computador, o usuário pode encerrar o motor de voz com `Ctrl+C` no terminal. A Nova desktop pode ser fechada com `Esc`.
+Para encerrar o pet, pressione `Esc`. Os motores ocultos podem ser finalizados pelo Gerenciador de Tarefas encerrando os processos `pythonw.exe` correspondentes.

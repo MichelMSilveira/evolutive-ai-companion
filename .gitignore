@@ -3,3 +3,43 @@ conversation.json
 __pycache__/
 *.pyc
 desktop-pet/nova-state.json
+spotify-integration/spotify_config.json
+spotify-integration/.env
+spotify-integration/*.token
+mascot-runtime/.env.local
+
+# Build and local development output
+mascot-runtime/node_modules/
+mascot-runtime/dist/
+mascot-runtime/*.tsbuildinfo
+*.log
+
+# Local runtime state and private data
+data/
+work/
+evolutive-ai-companion/
+desktop-pet/nova-state.json
+desktop-pet/yard-config.json
+desktop-pet/caption-live.json
+desktop-pet/vision-request.json
+desktop-pet/vision-response.json
+desktop-pet/nova-stop.json
+
+# Intermediate mascot renders; keep only the frames used by the desktop pet
+desktop-pet/behavior-*.png
+!desktop-pet/behavior-polished-0.png
+!desktop-pet/behavior-polished-1.png
+!desktop-pet/behavior-polished-2.png
+!desktop-pet/behavior-polished-3.png
+desktop-pet/walk-*.png
+!desktop-pet/walk-fixed-0.png
+!desktop-pet/walk-fixed-1.png
+!desktop-pet/walk-fixed-2.png
+!desktop-pet/walk-fixed-3.png
+!desktop-pet/walk-fixed-4.png
+!desktop-pet/walk-fixed-5.png
+!desktop-pet/walk-fixed-6.png
+!desktop-pet/walk-fixed-7.png
+desktop-pet/frames-check.png
+desktop-pet/review-*.png
+desktop-pet/nova-*.png

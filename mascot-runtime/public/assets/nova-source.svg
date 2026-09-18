@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nova mascot source">
+  <defs>
+    <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#72eee2"/><stop offset="1" stop-color="#27a9d7"/></linearGradient>
+    <linearGradient id="tail" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#253c73"/><stop offset="1" stop-color="#101d45"/></linearGradient>
+  </defs>
+  <g id="nova" stroke="#101d45" stroke-width="10" stroke-linejoin="round">
+    <path id="tail" fill="url(#tail)" d="M365 360c105 30 130-80 63-104-42-15-55 28-24 40 19 7 28-12 15-20 40 5 30 69-49 50z"/>
+    <path id="body" fill="url(#fur)" d="M139 327c-4-83 48-123 119-123s123 40 119 123c-3 57-42 91-119 91s-116-34-119-91z"/>
+    <path id="chest" fill="#fff4ef" stroke="none" d="M210 291c17 27 39 39 48 39s31-12 48-39c4 57-14 78-48 78s-52-21-48-78z"/>
+    <path id="head" fill="url(#fur)" d="M117 201 101 80l95 67c20-9 100-9 120 0l95-67-16 121c18 25 23 56 12 86-22 60-77 79-151 79s-129-19-151-79c-11-30-6-61 12-86z"/>
+    <path id="ear-left" fill="#ffb8c9" stroke="none" d="m124 112 65 45-51 24z"/><path id="ear-right" fill="#ffb8c9" stroke="none" d="m388 112-65 45 51 24z"/>
+    <ellipse id="eye-left" fill="#fff" cx="195" cy="226" rx="31" ry="39"/><ellipse id="eye-right" fill="#fff" cx="317" cy="226" rx="31" ry="39"/>
+    <ellipse fill="#193a86" cx="198" cy="229" rx="16" ry="25"/><ellipse fill="#193a86" cx="314" cy="229" rx="16" ry="25"/>
+    <path id="muzzle" fill="#fff4ef" stroke="none" d="M218 273q38-32 76 0-4 39-38 39t-38-39z"/><path id="mouth" fill="#f47b89" d="M246 286q10 12 20 0"/>
+    <path id="paw-left" fill="url(#fur)" d="M158 360q-37 12-31 59 7 27 45 14l36-23-19-47z"/><path id="paw-right" fill="url(#fur)" d="M354 360q37 12 31 59-7 27-45 14l-36-23 19-47z"/>
+    <circle cx="170" cy="351" r="16" fill="none" stroke="#8afff0"/><circle cx="342" cy="351" r="16" fill="none" stroke="#8afff0"/>
+  </g>
+</svg>

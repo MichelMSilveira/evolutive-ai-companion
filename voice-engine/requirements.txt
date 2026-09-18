@@ -5,3 +5,5 @@ pyttsx3>=2.98
 keyboard>=0.13.5
 edge-tts>=7.2.8
 pygame>=2.6.1
+colorama>=0.4.6
+mss>=10.0.0
